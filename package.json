@@ -4,7 +4,8 @@
 	"description": "A bot for Discord",
 	"main": "index.js",
 	"scripts": {
-		"start": "node index.js"
+		"start": "node .",
+		"update": "node Deploy-Commands.js"
 	},
 	"author": "Daniel Burrall",
 	"license": "ISC",

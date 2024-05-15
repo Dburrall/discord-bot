@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, GuildMember } = require("discord.js");
+const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -8,7 +8,7 @@ module.exports = {
 		// interaction.user is the object representing the User who ran the command
 		// interaction.member is the GuildMember object, which represents the user in the specific guild
 		await interaction.reply(
-			`${interaction.user.username} hasn't had a gay thought since ${interaction.member.joinedAt}. ${GuildMember.bannable}`
+			`${interaction.user.username} Whats up! you've been here since ${interaction.member.joinedAt}. `
 		);
 	},
 };

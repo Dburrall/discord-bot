@@ -1,188 +1,45 @@
 const { SlashCommandBuilder } = require("discord.js");
+const axios = require("axios");
 
-const pokemon = [
-	"Bulbasaur",
-	"Ivysaur",
-	"Venusaur",
-	"Charmander",
-	"Charmeleon",
-	"Charizard",
-	"Squirtle",
-	"Wartortle",
-	"Blastoise",
-	"Caterpie",
-	"Metapod",
-	"Butterfree",
-	"Weedle",
-	"Kakuna",
-	"Beedrill",
-	"Pidgey",
-	"Pidgeotto",
-	"Pidgeot",
-	"Rattata",
-	"Raticate",
-	"Spearow",
-	"Fearow",
-	"Ekans",
-	"Arbok",
-	"Pikachu",
-	"Raichu",
-	"Sandshrew",
-	"Sandslash",
-	"Nidoran♀",
-	"Nidorina",
-	"Nidoqueen",
-	"Nidoran♂",
-	"Nidorino",
-	"Nidoking",
-	"Clefairy",
-	"Clefable",
-	"Vulpix",
-	"Ninetales",
-	"Jigglypuff",
-	"Wigglytuff",
-	"Zubat",
-	"Golbat",
-	"Oddish",
-	"Gloom",
-	"Vileplume",
-	"Paras",
-	"Parasect",
-	"Venonat",
-	"Venomoth",
-	"Diglett",
-	"Dugtrio",
-	"Meowth",
-	"Persian",
-	"Psyduck",
-	"Golduck",
-	"Mankey",
-	"Primeape",
-	"Growlithe",
-	"Arcanine",
-	"Poliwag",
-	"Poliwhirl",
-	"Poliwrath",
-	"Abra",
-	"Kadabra",
-	"Alakazam",
-	"Machop",
-	"Machoke",
-	"Machamp",
-	"Bellsprout",
-	"Weepinbell",
-	"Victreebel",
-	"Tentacool",
-	"Tentacruel",
-	"Geodude",
-	"Graveler",
-	"Golem",
-	"Ponyta",
-	"Rapidash",
-	"Slowpoke",
-	"Slowbro",
-	"Magnemite",
-	"Magneton",
-	"Farfetch'd",
-	"Doduo",
-	"Dodrio",
-	"Seel",
-	"Dewgong",
-	"Grimer",
-	"Muk",
-	"Shellder",
-	"Cloyster",
-	"Gastly",
-	"Haunter",
-	"Gengar",
-	"Onix",
-	"Drowzee",
-	"Hypno",
-	"Krabby",
-	"Kingler",
-	"Voltorb",
-	"Electrode",
-	"Exeggcute",
-	"Exeggutor",
-	"Cubone",
-	"Marowak",
-	"Hitmonlee",
-	"Hitmonchan",
-	"Lickitung",
-	"Koffing",
-	"Weezing",
-	"Rhyhorn",
-	"Rhydon",
-	"Chansey",
-	"Tangela",
-	"Kangaskhan",
-	"Horsea",
-	"Seadra",
-	"Goldeen",
-	"Seaking",
-	"Staryu",
-	"Starmie",
-	"Mr. Mime",
-	"Scyther",
-	"Jynx",
-	"Electabuzz",
-	"Magmar",
-	"Pinsir",
-	"Tauros",
-	"Magikarp",
-	"Gyarados",
-	"Lapras",
-	"Ditto",
-	"Eevee",
-	"Vaporeon",
-	"Jolteon",
-	"Flareon",
-	"Porygon",
-	"Omanyte",
-	"Omastar",
-	"Kabuto",
-	"Kabutops",
-	"Aerodactyl",
-	"Snorlax",
-	"Articuno",
-	"Zapdos",
-	"Moltres",
-	"Dratini",
-	"Dragonair",
-	"Dragonite",
-	"Mewtwo",
-	"Mew",
-];
-
-function getRandomPokemon() {
-	const pokemonIndex = Math.floor(Math.random() * pokemon.length);
-	return pokemon[pokemonIndex];
+async function getRandomPokemon() {
+	try {
+		const total = 720;
+		const randomId = Math.floor(Math.random() * total) + 1;
+		const response = await axios.get(
+			`https://pokeapi.co/api/v2/pokemon/${randomId}`
+		);
+		return response.data;
+	} catch (error) {
+		console.error("Error fetching random Pokémon:", error);
+		throw error;
+	}
 }
 
-const response = [
-	{
-		0: `Holy Slurm! you caught a ${getRandomPokemon()}! `,
-		1: `Wiggity Wow you caught a ${getRandomPokemon()} way to go `,
-		2: `Whoa! Check it out, dudes! Looks like we got ourselves a ${getRandomPokemon()}. Awesome job `,
-		3: ` Awesome! caught a ${getRandomPokemon()} Keep on catchin' 'em and livin' it up, my friend! Party on `,
-		4: `Whoa, dudes and dudettes! Check it out, a ${getRandomPokemon()} I can't believe you caught that `,
-	},
-];
-
-function getRandomResponse() {
-	const responseIndex = Math.floor(
-		Math.random() * Object.keys(response[0]).length
-	);
-	return response[0][responseIndex];
-}
+getRandomPokemon()
+	.then((pokemon) => {
+		console.log(`You got ${pokemon.name}!`);
+	})
+	.catch((error) => {
+		console.error("An error occurred:", error);
+	});
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("pokemon")
 		.setDescription("Catches you a Pokemon!"),
 	async execute(interaction) {
-		await interaction.reply(
-			`${getRandomResponse()} ${interaction.user.username}!`
-		);
+		try {
+			const pokemon = await getRandomPokemon();
+			const imageUrl = pokemon.sprites.front_default;
+			await interaction.reply({
+				content: `${interaction.user.username} caught a ${pokemon.name}!`,
+				files: [imageUrl],
+			});
+		} catch (error) {
+			await interaction.reply(
+				"An error occurred while fetching a Pokémon. Please try again later."
+			);
+			console.error("Error executing command:", error);
+		}
 	},
 };

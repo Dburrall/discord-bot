@@ -17,7 +17,7 @@ async function getRandomPokemon() {
 
 getRandomPokemon()
 	.then((pokemon) => {
-		console.log(`You got ${pokemon.name}!`);
+		// console.log(`You got ${pokemon.name}!`);
 	})
 	.catch((error) => {
 		console.error("An error occurred:", error);

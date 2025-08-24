@@ -2,8 +2,6 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
 const { token, clientId, guildId } = require("./config.json");
-const user = require("./commands/utility/user");
-const pokemon = require("./commands/utility/pokemon");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
